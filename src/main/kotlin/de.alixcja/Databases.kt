@@ -13,6 +13,8 @@ import java.sql.Connection
 import java.sql.DriverManager
 import org.jetbrains.exposed.sql.*
 
+/*
+
 fun Application.configureDatabases() {
     val dbConnection: Connection = connectToPostgres(embedded = true)
     val cityService = CityService(dbConnection)
@@ -94,6 +96,7 @@ fun Application.configureDatabases() {
         }
     }
 }
+*/
 /**
  * Makes a connection to a Postgres database.
  *
@@ -114,7 +117,8 @@ fun Application.configureDatabases() {
  *
  * @return [Connection] that represent connection to the database. Please, don't forget to close this connection when
  * your application shuts down by calling [Connection.close]
- * */
+ * *//*
+
 fun Application.connectToPostgres(embedded: Boolean): Connection {
     Class.forName("org.postgresql.Driver")
     if (embedded) {
@@ -128,4 +132,30 @@ fun Application.connectToPostgres(embedded: Boolean): Connection {
 
         return DriverManager.getConnection(url, user, password)
     }
+}
+*/
+
+
+fun createTables() {
+    logger.info { "Creating all necessary tables" }
+    transaction {
+        SchemaUtils.create(Vehicle)
+        logger.info { "Created `vehicle` table " }
+        SchemaUtils.create(Mileage)
+        logger.info { "Created `mileage` table " }
+        SchemaUtils.create(Refuel)
+        logger.info { "Created `refuel` table " }
+    }
+    logger.info { "Created all necessary tables" }
+}
+
+fun connectToPostgresSql() {
+    logger.info { "Connecting to PostgresSQL database" }
+    Database.connect(
+        "jdbc:postgresql://localhost:5432/focify",
+        driver = "org.postgresql.Driver",
+        user = "postgres",
+        password = "postgres"
+    )
+    logger.info { "Successfully connected to PostgresSQL database" }
 }
